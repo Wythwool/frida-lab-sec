@@ -1,0 +1,7 @@
+[
+  "scripts/android/exec_watch.js",
+  "scripts/android/webview_guard.js",
+  "scripts/android/keystore_watch.js",
+  "scripts/android/http_okhttp.js",
+  "scripts/common/anti_obfuscation.js"
+]

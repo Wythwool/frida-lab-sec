@@ -1,0 +1,6 @@
+[
+  "scripts/ios/exec_watch.js",
+  "scripts/ios/keystore_watch.js",
+  "scripts/ios/url_loading.js",
+  "scripts/common/anti_obfuscation.js"
+]

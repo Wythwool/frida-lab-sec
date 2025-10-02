@@ -1,0 +1,16 @@
+{
+  "name": "frida-lab-sec",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/cli.js"
+  },
+  "dependencies": {
+    "frida": "^16.1.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

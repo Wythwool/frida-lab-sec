@@ -1,16 +1,32 @@
 {
   "name": "frida-lab-sec",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "description": "Safe Frida mobile security lab scripts and CLI",
   "license": "MIT",
   "type": "module",
+  "bin": {
+    "frida-lab-sec": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "packs",
+    "scripts",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "prepare": "npm run build",
+    "prepack": "npm run build",
+    "test": "npm run build && node --test test/*.test.mjs",
     "start": "node dist/cli.js"
   },
   "dependencies": {
     "frida": "^16.1.8"
   },
   "devDependencies": {
+    "@types/node": "^20.14.11",
     "typescript": "^5.4.5"
   }
 }

@@ -1,17 +1,25 @@
-
 if (Java.available) {
-  Java.perform(function(){
-    var res = [];
+  Java.perform(function () {
+    var matches = [];
     Java.enumerateLoadedClasses({
-      onMatch: function(c){ if (c.indexOf('$')<0 && (c.toLowerCase().indexOf('crypto')>=0 || c.toLowerCase().indexOf('exec')>=0)) res.push(c); },
-      onComplete: function(){ send({t:'android.find', classes: res}); }
+      onMatch: function (name) {
+        var lower = name.toLowerCase();
+        if (name.indexOf("$") < 0 && (lower.indexOf("crypto") >= 0 || lower.indexOf("exec") >= 0 || lower.indexOf("root") >= 0)) {
+          matches.push(name);
+        }
+      },
+      onComplete: function () {
+        send({ platform: "android", category: "class-search", classes: matches });
+      },
     });
   });
 }
+
 if (ObjC.available) {
   var out = [];
   for (var cls in ObjC.classes) {
-    if (cls.toLowerCase().indexOf('url')>=0 || cls.indexOf('SecItem')>=0) out.push(cls);
+    var lower = cls.toLowerCase();
+    if (lower.indexOf("url") >= 0 || cls.indexOf("SecItem") >= 0 || lower.indexOf("crypto") >= 0) out.push(cls);
   }
-  send({t:'ios.find', classes: out});
+  send({ platform: "ios", category: "class-search", classes: out });
 }

@@ -1,20 +1,28 @@
+Java.perform(function () {
+  function event(api, command) {
+    send({ platform: "android", category: "process", api: api, command: command });
+  }
 
-Java.perform(function() {
-  var Runtime = Java.use('java.lang.Runtime');
-  var PB = Java.use('java.lang.ProcessBuilder');
-  Runtime.exec.overload('[Ljava.lang.String;').implementation = function(cmd) {
-    var arr = []; for (var i=0;i<cmd.length;i++) arr.push(cmd[i]);
-    send({t:'android.exec', api:'Runtime.exec(String[])', cmd: arr});
-    return this.exec(cmd);
+  var Runtime = Java.use("java.lang.Runtime");
+  var ProcessBuilder = Java.use("java.lang.ProcessBuilder");
+
+  Runtime.exec.overload("[Ljava.lang.String;").implementation = function (command) {
+    var out = [];
+    for (var i = 0; i < command.length; i++) out.push(command[i]);
+    event("Runtime.exec(String[])", out);
+    return this.exec(command);
   };
-  Runtime.exec.overload('java.lang.String').implementation = function(s) {
-    send({t:'android.exec', api:'Runtime.exec(String)', cmd: s});
-    return this.exec(s);
+
+  Runtime.exec.overload("java.lang.String").implementation = function (command) {
+    event("Runtime.exec(String)", command);
+    return this.exec(command);
   };
-  PB.start.implementation = function() {
-    var list = this.command().toArray(); var arr = [];
-    for (var i=0;i<list.length;i++) arr.push(list[i].toString());
-    send({t:'android.exec', api:'ProcessBuilder.start', cmd: arr});
+
+  ProcessBuilder.start.implementation = function () {
+    var list = this.command().toArray();
+    var out = [];
+    for (var i = 0; i < list.length; i++) out.push(list[i].toString());
+    event("ProcessBuilder.start", out);
     return this.start();
   };
 });

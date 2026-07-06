@@ -1,15 +1,22 @@
-
-Java.perform(function() {
+Java.perform(function () {
   try {
-    var Call = Java.use('okhttp3.RealCall');
-    Call.execute.implementation = function() {
+    var Call = Java.use("okhttp3.RealCall");
+    Call.execute.implementation = function () {
       try {
-        var req = this.request();
-        var url = req.url().toString();
-        var m = req.method().toString();
-        send({t:'android.http', lib:'okhttp3', method:m, url:url});
-      } catch(e){}
+        var request = this.request();
+        send({
+          platform: "android",
+          category: "http",
+          library: "okhttp3",
+          method: request.method().toString(),
+          url: request.url().toString(),
+        });
+      } catch (e) {
+        send({ platform: "android", category: "hook-error", stage: "okhttp.inspect", message: String(e) });
+      }
       return this.execute();
     };
-  } catch(e) { }
+  } catch (e) {
+    send({ platform: "android", category: "hook-skip", stage: "okhttp.RealCall", message: String(e) });
+  }
 });

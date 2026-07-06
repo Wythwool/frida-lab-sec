@@ -1,20 +1,22 @@
-
-Java.perform(function() {
+Java.perform(function () {
   try {
-    var KS = Java.use('java.security.KeyStore');
-    KS.getInstance.overload('java.lang.String').implementation = function(typ) {
-      var r = this.getInstance(typ);
-      send({t:'android.ks', api:'KeyStore.getInstance', type: typ.toString()});
-      return r;
+    var KeyStore = Java.use("java.security.KeyStore");
+    KeyStore.getInstance.overload("java.lang.String").implementation = function (type) {
+      var result = this.getInstance(type);
+      send({ platform: "android", category: "keystore", api: "KeyStore.getInstance", type: type.toString() });
+      return result;
     };
-    KS.getKey.overload('java.lang.String','[C').implementation = function(alias, pwd) {
-      send({t:'android.ks', api:'KeyStore.getKey', alias: alias});
-      return this.getKey(alias, pwd);
+    KeyStore.getKey.overload("java.lang.String", "[C").implementation = function (alias, password) {
+      send({ platform: "android", category: "keystore", api: "KeyStore.getKey", alias: alias });
+      return this.getKey(alias, password);
     };
-    var Cipher = Java.use('javax.crypto.Cipher');
-    Cipher.init.overload('int', 'java.security.Key').implementation = function(mode, key) {
-      send({t:'android.crypto', api:'Cipher.init', mode: mode, alg: this.getAlgorithm()});
+
+    var Cipher = Java.use("javax.crypto.Cipher");
+    Cipher.init.overload("int", "java.security.Key").implementation = function (mode, key) {
+      send({ platform: "android", category: "crypto", api: "Cipher.init", mode: mode, algorithm: this.getAlgorithm() });
       return this.init(mode, key);
     };
-  } catch(e) { send({t:'err', where:'android.keystore', msg: e.toString()}); }
+  } catch (e) {
+    send({ platform: "android", category: "hook-skip", stage: "android.keystore", message: String(e) });
+  }
 });

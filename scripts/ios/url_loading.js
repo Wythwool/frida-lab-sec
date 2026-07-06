@@ -1,22 +1,26 @@
-
 if (ObjC.available) {
   try {
     var NSURLSession = ObjC.classes.NSURLSession;
-    if (NSURLSession && NSURLSession['- dataTaskWithRequest:completionHandler:']) {
-      Interceptor.attach(NSURLSession['- dataTaskWithRequest:completionHandler:'].implementation, {
-        onEnter: function(args) {
-          var req = new ObjC.Object(args[2]);
-          var url = req.URL().absoluteString().toString();
-          var method = req.HTTPMethod() ? req.HTTPMethod().toString() : 'GET';
-          send({t:'ios.http', method: method, url: url});
-        }
+    if (NSURLSession && NSURLSession["- dataTaskWithRequest:completionHandler:"]) {
+      Interceptor.attach(NSURLSession["- dataTaskWithRequest:completionHandler:"].implementation, {
+        onEnter: function (args) {
+          var request = new ObjC.Object(args[2]);
+          var url = request.URL().absoluteString().toString();
+          var method = request.HTTPMethod() ? request.HTTPMethod().toString() : "GET";
+          send({ platform: "ios", category: "http", api: "NSURLSession.dataTaskWithRequest", method: method, url: url });
+        },
       });
     }
+
     var WKPreferences = ObjC.classes.WKPreferences;
-    if (WKPreferences && WKPreferences['- setJavaScriptEnabled:']) {
-      Interceptor.attach(WKPreferences['- setJavaScriptEnabled:'].implementation, {
-        onEnter: function(args) { send({t:'ios.web', setJsEnabled: !!(args[2].toInt32())}); }
+    if (WKPreferences && WKPreferences["- setJavaScriptEnabled:"]) {
+      Interceptor.attach(WKPreferences["- setJavaScriptEnabled:"].implementation, {
+        onEnter: function (args) {
+          send({ platform: "ios", category: "webview", api: "WKPreferences.setJavaScriptEnabled", enabled: !!args[2].toInt32() });
+        },
       });
     }
-  } catch(e){ send({t:'err', where:'ios.url', msg:e.toString()}); }
+  } catch (e) {
+    send({ platform: "ios", category: "hook-error", stage: "ios.url_loading", message: String(e) });
+  }
 }

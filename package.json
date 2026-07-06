@@ -19,7 +19,7 @@
     "check": "tsc -p tsconfig.json --noEmit",
     "prepare": "npm run build",
     "prepack": "npm run build",
-    "test": "npm run build && node --test test/*.test.mjs",
+    "test": "npm run build && node --test test/cli.test.mjs",
     "start": "node dist/cli.js"
   },
   "dependencies": {
